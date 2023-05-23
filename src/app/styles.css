@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+  
+	color-scheme: light dark;
+	color: rgba(255, 255, 255, 0.87);
+	background-color: #242424;
+}
+
+a {
+	font-weight: 500;
+	color: #646cff;
+	text-decoration: inherit;
+}
+
+a:hover {
+	color: #535bf2;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+	  color: #213547;
+	  background-color: #ffffff;
+	}
+	a:hover {
+	  color: #747bff;
+	}
+}
+
+
+body {
+	margin: 0;
+	min-width: 320px;
+	min-height: 100vh;
+}
+
+main {
+	min-height: 100vh;
+	width: max(400px, 60vw);
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 10vw 0 5vw 0;
+
+	display: grid;
+	grid-template-rows: min-content repeat(10, min-content);
+	gap: 1em;
+}
+
+@media only screen and (max-height: 900px) {
+	main {
+		padding-top: 5vw;
+	}
+}
+
+
+.searchbox {
+	width: 100%;
+	padding: 1em;
+}
+
+.result {
+	justify-self: stretch;
+}
+
+.result.item {
+	justify-self: stretch;
+}
+
+.blurred .result {
+	filter: blur(4px);
+}
