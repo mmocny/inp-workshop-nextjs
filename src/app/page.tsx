@@ -13,8 +13,6 @@ import useAbortSignallingTransition from "@/hooks/useAbortSignallingTransition";
 import useDebouncedEffect from "@/hooks/useDebouncedEffect";
 import { schedulerDotYield } from "@/script/schedulerDotYield";
 
-const signal = new AbortController().signal;
-
 /*
  *
  */
@@ -26,14 +24,18 @@ async function filterResults(sailData: SailData, searchTerm: string, abortSignal
   const results: SearchResult[] = [];
 
   for (let sailBoat of sailData.data) {
+    // 4:
     // await schedulerDotYield();
+
+    // 6:
     // if (abortSignal?.aborted) {
     //   performance.measure('Abort filterResults for: ' + searchTerm, { start });
     //   return [];
     // }
 
     let result: SearchResult = { score: 1.0, item: sailBoat };
-    result = scoreMatch(sailBoat, searchTerm);
+    // 1:
+    // result = scoreMatch(sailBoat, searchTerm);
     if (result) {
       results.push(result);
     }
@@ -78,19 +80,19 @@ function SearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [autoCompleteTerm, setAutoCompleteTerm] = useState("");
 
-  useDebouncedEffect(() => {
-    startTransition(() => {
-      setAutoCompleteTerm(searchTerm);
-    });
-  }, 1000, [searchTerm]);
+  // 3:
+  // useDebouncedEffect(() => {
+  //   startTransition(() => {
+  //     setAutoCompleteTerm(searchTerm);
+  //   });
+  // }, 1000, [searchTerm]);
 
   const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setSearchTerm(searchTerm);
-    // setAutoSearchTerm(searchTerm);
-
+    // 2:
     // startTransition(() => {
-    //   setAutoCompleteTerm(searchTerm);
+      setAutoCompleteTerm(searchTerm);
     // });
   };
 
