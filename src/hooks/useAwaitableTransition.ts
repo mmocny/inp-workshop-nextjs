@@ -1,15 +1,18 @@
 import { TransitionFunction, TransitionStartFunction, useCallback, useEffect, useRef, useTransition } from "react";
 
-export default function useAwaitableTransition() : [boolean, TransitionStartFunction] {
+export type AwaitableTransitionStartFunction = (callback: TransitionFunction) => Promise<void>;
+
+export default function useAwaitableTransition() : [boolean, AwaitableTransitionStartFunction] {
 	const [isPending, startTransition] = useTransition();
 	const resolveRef = useRef<(value?: unknown) => void>();
 	const rejectRef = useRef<(reason?: any) => void>();
 
-	const startAwaitableTransition = useCallback(
+	const startAwaitableTransition: AwaitableTransitionStartFunction = useCallback(
 		(callback: TransitionFunction) => {
 			rejectRef.current?.();
 
 			return new Promise((resolve, reject) => {
+				// @ts-ignore
 				resolveRef.current = resolve;
 				rejectRef.current = reject;
 

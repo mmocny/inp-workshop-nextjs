@@ -1,7 +1,7 @@
 import { TransitionFunction, TransitionStartFunction, useCallback, useState } from "react";
-import useAwaitableTransition from "./useAwaitableTransition";
+import useAwaitableTransition, { AwaitableTransitionStartFunction } from "./useAwaitableTransition";
 
-export default function useAbortSignallingTransition() : [boolean, TransitionStartFunction, AbortSignal] {
+export default function useAbortSignallingTransition() : [boolean, AwaitableTransitionStartFunction, AbortSignal] {
 	const [isPending, startAwaitableTransition] = useAwaitableTransition();
 	const [abortController, setAbortController] = useState(new AbortController);
 
