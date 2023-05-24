@@ -49,43 +49,6 @@ async function filterResults(sailData: SailData, searchTerm: string, abortSignal
 /*
  *
  */
-function SearchPage() {
-  const sailData = use(cache(getSailData)());
-
-  const [isPending, startTransition, signal] = useAbortSignallingTransition();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [autosearchTerm, setAutoSearchTerm] = useState("");
-
-  // useDebouncedEffect(() => {
-  //   startSpecialTransition(() => {
-  //     setAutoSearchTerm(searchTerm);
-  //   });
-  // }, 1000, [searchTerm]);
-
-  const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value;
-    setSearchTerm(searchTerm);
-    setAutoSearchTerm(searchTerm);
-
-    // startTransition(() => {
-    //   setAutoSearchTerm(searchTerm);
-    // });
-  };
-
-  return (
-    <main className={isPending ? "blurred" : ""}>
-      <SearchBar searchTerm={searchTerm} onInput={onInput}></SearchBar>
-      <Suspense>
-        <AutoComplete searchTerm={autosearchTerm} sailData={sailData!} abortSignal={signal}></AutoComplete>
-      </Suspense>
-    </main>
-  );
-}
-
-
-/*
- *
- */
 function AutoComplete({ searchTerm, sailData, abortSignal }: {
   searchTerm: string,
   sailData: SailData,
@@ -104,6 +67,42 @@ function AutoComplete({ searchTerm, sailData, abortSignal }: {
   );
 };
 
+
+/*
+ *
+ */
+function SearchPage() {
+  const sailData = use(cache(getSailData)());
+
+  const [isPending, startTransition, signal] = useAbortSignallingTransition();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [autoCompleteTerm, setAutoCompleteTerm] = useState("");
+
+  useDebouncedEffect(() => {
+    startTransition(() => {
+      setAutoCompleteTerm(searchTerm);
+    });
+  }, 1000, [searchTerm]);
+
+  const onInput = async (e: ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setSearchTerm(searchTerm);
+    // setAutoSearchTerm(searchTerm);
+
+    // startTransition(() => {
+    //   setAutoCompleteTerm(searchTerm);
+    // });
+  };
+
+  return (
+    <main className={isPending || searchTerm != autoCompleteTerm ? "blurred" : ""}>
+      <SearchBar searchTerm={searchTerm} onInput={onInput}></SearchBar>
+      <Suspense>
+        <AutoComplete searchTerm={autoCompleteTerm} sailData={sailData!} abortSignal={signal}></AutoComplete>
+      </Suspense>
+    </main>
+  );
+}
 
 // This disables SSR in NextJS for this Page
 const Page = dynamic(async () => SearchPage, { ssr: false });

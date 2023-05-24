@@ -1,23 +1,68 @@
-Open [app/page.tsx](./app/page.tsx).
+# INP React (NextJS) Demo: Sail boat Search!
 
-## Steps
+A interactive demo and workshop for learning about [Interaction to Next Paint (INP)](https://web.deb/inp), using React and NextJS.
 
-* Default demo-- not working search
+## Getting Started
 
-* Blocking search in event handler
+Clone this repository, or, [open it in a cloud editor such as CloudSandbox](https://codesandbox.io/p/github/mmocny/inp-codesandbox-nextjs)).
 
-* startTransition()
-  * delaying to next frame
-  * can update textbox, or, add css effects
-  * Still affects interactions, only the very first paint improved
+If you cloned the repo, run `npm run dev` or follow the [NextJS development guide](https://nextjs.org/docs/getting-started/installation#run-the-development-server).
 
-* Add `debounce()` effect to cancel needless search work.
+Make edits in `app/page.tsx`, and follow the instructions in this Readme.
 
-* Once work is started, yield to handle any incoming new interactions quickly.
+## Try the default application
 
-* Abort needless work to decrease load
+After cloning the repo, try the default application.  The search box works, and is fairly responsive -- but the search results are *not actually working*.
 
+You can check the DevTools console for live Interaction measurements.
 
-## TODO:
+## Lets implement simple Search functionality
 
-* Try a version that leverages Components
+To add search, update the `filterResults` function to actually assign a score to each possible search result.
+You can do so just by uncommenting a single line in this workshop.
+
+ANSWER
+
+Notice, that search works much better now -- but the page is very slow to respond to search input.
+With each subsequent character, it gets even slower!
+
+## Lets delay search results until after textbox updates
+
+As an initial improvement, lets delay starting to compute search results until at least the search textbox updates.
+There are many ways to do this, but the cleanest way in modern react is to leverage the `useTransition` hook.
+
+A transition is a way to make a state change-- but to let React delay rendering that part of the Component update until after the initial render.
+
+ANSWER
+
+If you type one character at a time, slowly, you will see a small improvement: at least you can see what you are typing!  Results are still slow, and rapid text entry is still a problem.
+
+## Delay search results even more: Debounce
+
+Move the `startTransition` and state update to a `debounce` effect.  Meaning, delay the transition after the event changes the state of the search term, for 500-1000ms.
+
+The debounced effect will cancel any work that hasn't started yet, in case the user types quickly.
+
+This helps for many interactions, perhaps most interactions, but still -- once the work to generate search results does get started-- an interaction at that exact moment will still be slow.
+
+Also, debounce means intentionally delaying search results.  Although the responsiveness of the textbox is much better-- the response of the search results is much worse.
+
+Not great.
+
+## Replace the debounce with an async filter that yields
+
+Lets change our `filterResults` to be async, and to yield to the browser main thread as it processes through search results.
+
+Instead of generating all the results all in one go, synchronously, it will resolve a Promise when it is done, asynchronously.
+
+Now, each new import can be handled by the browser, and by react, and it will replace out search term and overwrite our Transition.
+
+## Remove the debounce
+
+Now that we have yieldy `filterResults`, we don't really need to debounce any more.  We may still choose to do so -- for example, if filterResults needed to make a fetch call to a server, which could be expensive to do needlessly.
+
+## One last improvement: Abortable Transitions
+
+The previous version is *always* responsive, however, with each new character typed, we will generate the full search results -- even if we already aborted the transition and won't need them any more.
+
+Let's leverage an `AbortController` to cancel any in-progress work, whenever the search term changes.
