@@ -2,6 +2,8 @@
 
 A interactive demo and workshop for learning about [Interaction to Next Paint (INP)](https://web.dev/inp), using React and NextJS.
 
+If you like following a long in a video form, here's a session from Google I/O 2023 -> https://www.youtube.com/watch?v=KZ1kxzsJZ5g.
+
 ## Getting Started
 
 Clone this repository, or, [open it in a cloud editor such as CloudSandbox](https://codesandbox.io/p/github/mmocny/inp-codesandbox-nextjs)).
