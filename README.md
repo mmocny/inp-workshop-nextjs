@@ -1,6 +1,6 @@
 # INP React (NextJS) Demo: Sail boat Search!
 
-A interactive demo and workshop for learning about [Interaction to Next Paint (INP)](https://web.deb/inp), using React and NextJS.
+A interactive demo and workshop for learning about [Interaction to Next Paint (INP)](https://web.dev/inp), using React and NextJS.
 
 ## Getting Started
 
