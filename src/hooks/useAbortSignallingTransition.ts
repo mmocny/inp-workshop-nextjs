@@ -10,12 +10,11 @@ export default function useAbortSignallingTransition() : [boolean, AwaitableTran
 
 		try {
 			await startAwaitableTransition(() => {
-				callback();
 				setAbortController(newAbortController);
+				callback();
 			});
 			// Cleanup here
-		} catch(ex) {
-			// Abort here
+		} catch (ex) {
 			newAbortController.abort();
 			// throw ex;
 		}
